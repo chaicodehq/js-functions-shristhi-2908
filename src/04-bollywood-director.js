@@ -45,13 +45,48 @@
  *   pricer("gold", true)  // => 200 * 1.5 * 1.3 = 390
  */
 export function createDialogueWriter(genre) {
-  // Your code here
+  const templates = {
+    action: (hero, villain) =>
+      `${hero} says: 'Tujhe toh main dekh lunga, ${villain}!'`,
+    romance: (hero, villain) =>
+      `${hero} whispers: '${villain}, tum mere liye sab kuch ho'`,
+    comedy: (hero, villain) =>
+      `${hero} laughs: '${villain} bhai, kya kar rahe ho yaar!'`,
+    drama: (hero, villain) =>
+      `${hero} cries: '${villain}, tune mera sab kuch cheen liya!'`,
+  };
+
+  if(!templates[genre]) return null;
+  return function(hero,villain){
+    if(!hero||!villain) return "...";
+    return templates[genre](hero,villain);
+  }
+   
 }
 
 export function createTicketPricer(basePrice) {
-  // Your code here
+ if(typeof basePrice!=="number" || basePrice<=0) return null;
+  return function(seatType, isWeekend = false){
+    const seatmultipliers={silver:1, gold:1.5, platinum:2 }
+
+    if(!(seatType in seatmultipliers)) return null
+    let finalPrice=basePrice*seatmultipliers[seatType]
+    if(isWeekend){
+      finalPrice= finalPrice*1.3
+    }
+return Math.round(finalPrice)
+  }
 }
 
 export function createRatingCalculator(weights) {
-  // Your code here
+  if(!weights||typeof weights!=="object") return null;
+  return function(scores){
+    let weightedAvg=0;
+    for(const key in weights){
+      if(scores[key]!==undefined){
+weightedAvg+=weights[key]*scores[key];
+      }
+    }
+    return Number(weightedAvg.toFixed(1))
+  }
 }

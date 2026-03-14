@@ -20,7 +20,7 @@
  *      - Agar guests not array or notifyCallback not function, return []
  *
  *   3. handleRSVP(guest, onAccept, onDecline)
- *      - If guest.rsvp === "yes", call onAccept(guest) and return its result
+ *      - If guest.rsvp === "yes", call onAccept(guest) and return its result n    
  *      - If guest.rsvp === "no", call onDecline(guest) and return its result
  *      - If guest.rsvp is anything else, return null
  *      - Agar guest null/undefined or callbacks not functions, return null
@@ -46,17 +46,45 @@
  *   // => "Amit is coming!"
  */
 export function processGuests(guests, filterFn) {
-  // Your code here
+  if(!Array.isArray(guests)||typeof filterFn!=="function") return [];
+  let result=[];
+
+  for(const guest of guests){
+    if(filterFn(guest)){
+      result.push(guest)
+    }
+  }
+ return result;
 }
 
 export function notifyGuests(guests, notifyCallback) {
-  // Your code here
+  if(!Array.isArray(guests)||typeof notifyCallback!=="function") return [];
+  let results=[];
+
+  for(const guest of guests){
+    const notifyStore=notifyCallback(guest)
+    results.push(notifyStore)
+    }
+  
+ return results;
 }
 
+ 
 export function handleRSVP(guest, onAccept, onDecline) {
-  // Your code here
+  if(!guest||typeof onAccept!=="function"||typeof onDecline!=="function") return null;
+   if(guest.rsvp==="yes") return onAccept(guest)
+   if(guest.rsvp==="no") return onDecline(guest)
+return null;
+
 }
 
 export function transformGuestList(guests, ...transformFns) {
-  // Your code here
+ if(!Array.isArray(guests))return []
+ let result=guests;
+ for(const fn of transformFns){
+  if(typeof fn ==="function"){
+    result=fn(result)
+  }
+ }
+ return result;
 }
